@@ -1,4 +1,4 @@
-const API_URL = "http://backend:8080";
+const API_URL = "http://localhost:8080";
 
 
 export async function createUser(data) {

@@ -10,6 +10,23 @@ import (
 	"BetKZ/internal/service"
 )
 
+func withCORS(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Allow frontend
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		// Preflight request
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	userRepo := memory.NewUserRepository()
 	eventRepo := memory.NewEventRepository()
@@ -27,10 +44,11 @@ func main() {
 		}
 	}()
 
-	http.HandleFunc("/users", handlers.CreateUser(userService))
-	http.HandleFunc("/events", handlers.ListEvents(eventService))
-	http.HandleFunc("/bets", handlers.PlaceBet(betService))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/users", handlers.CreateUser(userService))
+	mux.HandleFunc("/events", handlers.ListEvents(eventService))
+	mux.HandleFunc("/bets", handlers.PlaceBet(betService))
 
 	log.Println("BetKZ server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", withCORS(mux)))
 }
