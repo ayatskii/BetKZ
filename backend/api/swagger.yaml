@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: BetKZ API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /users:
+    post:
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        "200":
+          description: OK
+
+  /events:
+    get:
+      summary: Get events
+      responses:
+        "200":
+          description: OK
+
+  /bets:
+    post:
+      summary: Place bet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BetCreate"
+      responses:
+        "200":
+          description: OK
+
+components:
+  schemas:
+    UserCreate:
+      type: object
+      required: [email, balance]
+      properties:
+        email:
+          type: string
+        balance:
+          type: number
+
+    BetCreate:
+      type: object
+      required: [user_id, event_id, amount]
+      properties:
+        user_id:
+          type: integer
+        event_id:
+          type: integer
+        amount:
+          type: number
