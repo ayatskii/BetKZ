@@ -1,50 +1,143 @@
 # BetKZ — Online Sportsbook Website
 
 ## Project Overview
-BetKZ is a modern online sportsbook designed for users worldwide.
+BetKZ is a web-based sportsbook platform developed as an academic full-stack project.
 
-The project focuses on creating a fast, simple, and reliable betting website that works smoothly on both desktop and mobile devices.
+The goal of the project is to design a fast, simple, and well-structured betting website that demonstrates how complex platforms can be improved through clean architecture and user-focused interface design.
 
-Our goal is to replace slow, overloaded betting platforms with a clean and user-friendly experience.
+This project focuses on technical implementation and usability rather than commercial deployment.
 
-## Why This Project Matters
-Sports betting is popular all over the world, but many platforms still suffer from:
+---
 
-- Slow performance
-- Complicated interfaces
-- Long and unclear payout processes
+## Problem Statement
+Many existing sportsbook websites have common issues that negatively affect user experience:
 
-BetKZ aims to solve these problems by offering:
+- Overloaded interfaces with excessive menus and advertisements
+- Slow page loading and poor mobile optimization
+- Complicated betting workflows
+- Difficult navigation for new users
 
-- Quick access to sports events
-- Clear betting options and odds
-- A smooth and responsive website
+These problems often make platforms hard to use, especially for casual users.
 
-The platform is designed for everyday users who want to place bets without unnecessary complexity.
+---
+
+## Global Competitor Comparison
+The sportsbook market includes a variety of well-known global platforms, such as Bet365, William Hill, 1xBet, and others.  
+While these platforms are established and feature-rich, they share common issues that affect usability and accessibility.
+
+Below is a high-level comparison of typical strengths and weaknesses seen in leading sportsbook platforms:
+
+| Competitor | Strengths | Weaknesses |
+|------------|-----------|------------|
+| Bet365 | Extensive live markets, advanced analytics | Complex navigation, high feature overload |
+| William Hill | Long market presence, diverse markets | Outdated interface, less optimized on mobile |
+| 1xBet | Huge selection of events and markets | Aggressive ads, confusing UI |
+| Regional platforms | Local focus, language support | Slow performance, limited feature polish |
+
+### How BetKZ Differs
+BetKZ is not intended to compete feature-by-feature with large global bookies.  
+Instead, BetKZ focuses on:
+
+- Simplified experience — fewer unnecessary components, more clarity  
+- Faster core workflows — browse events, place bets, track results  
+- Usability-first design — minimal learning curve for new users  
+- Responsive layout — works well on mobile and desktop without heavy UI elements
+
+This approach makes the platform more accessible for casual users and provides a useful case study on how UX and architecture affect real-world systems.
+
+### Key Insight
+Most competitors prioritize feature quantity, while usability and simplicity are often overlooked.
+
+---
+
+## Project Advantages
+BetKZ addresses these weaknesses with a different approach:
+
+- Minimal and clean interface focused on essential actions
+- Clear user flow: Browse → Bet → Track → Withdraw
+- Responsive design optimized for both desktop and mobile
+- Simple onboarding with intuitive navigation
+- MVP-focused scope without unnecessary complexity
+
+The project demonstrates that improving usability does not require adding more features.
+
+---
+
+## Project Objectives
+The main objectives of this project are:
+
+- To analyze existing sportsbook platforms and identify usability problems
+- To design a simplified and structured betting workflow
+- To implement a client–server architecture
+- To practice frontend and backend integration
+- To build a scalable MVP using modern web technologies
+
+---
 
 ## Target Users
+The platform is designed for:
+
 - Sports fans aged 18–35
 - Casual bettors interested in football, boxing, and e-sports
 
-### User Needs
-- Easy registration
-- Fast website loading
-- Clear bet tracking
-- Mobile-friendly design
+The system intentionally avoids advanced professional tools to keep the interface simple and accessible.
 
-## Core Features (MVP)
-**User flow:** Browse → Bet → Track → Withdraw
+---
 
-- **Account & Payments:** simple sign-up and balance management
-- **Betting:** single bets, combined bets, early cash-out
-- **User Dashboard:** bet history, balance overview, notifications
-- **Admin Panel:** event management, odds setup, user monitoring
+## Core Functionality (MVP)
 
-## Technology & Plan
-- **Frontend:** React
-- **Backend:** Go
+### User Flow
+Browse → Bet → Track → Withdraw
 
-### Timeline
-- Weeks 1–4: user authentication and betting pages
-- Weeks 5–8: payments and admin panel
-- Week 9+: MVP launch
+### User Features
+- User registration and authentication
+- Sports event browsing
+- Single and combined bets
+- Balance management
+- Bet history and notifications
+
+### Administrative Features
+- Event and match management
+- Odds configuration
+- User activity monitoring
+
+---
+
+## System Architecture
+The platform follows a client–server architecture:
+
+- The frontend handles user interaction and presentation
+- The backend processes business logic and data management
+- Communication is implemented using REST APIs
+
+This architecture allows easy extension in future versions.
+
+---
+
+## Technology Stack
+- Frontend: React
+- Backend: Go
+
+These technologies were chosen for performance, scalability, and real-world applicability.
+
+---
+
+## Project Scope
+This project represents a Minimum Viable Product (MVP).
+
+Only core features required to demonstrate the idea and technical approach are implemented.  
+Commercial deployment, real financial integrations, and regulatory aspects are outside the project scope.
+
+---
+
+## Development Timeline
+- Weeks 1–4: UI design, authentication, betting pages
+- Weeks 5–8: backend logic, admin panel
+- Week 9+: testing and MVP completion
+
+---
+
+## Conclusion
+BetKZ demonstrates how a sportsbook platform can be redesigned with a focus on usability, simplicity, and clean system architecture.
+
+The project serves as a practical example of full-stack web development and highlights the importance of thoughtful design over feature overload.
