@@ -1,67 +1,58 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
-	"BetKZ/internal/api/handlers"
-	"BetKZ/internal/repository/memory"
-	"BetKZ/internal/service"
+	"BetKZ/config"
+	"BetKZ/pkg/database"
+
+	"github.com/gin-gonic/gin"
 )
 
-func withCORS(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-		if r.Method == http.MethodOptions {
-			return
-		}
-
-		h.ServeHTTP(w, r)
-	})
-}
-
 func main() {
-	userRepo := memory.NewUserRepository()
-	eventRepo := memory.NewEventRepository()
-	betRepo := memory.NewBetRepository()
+	cfg := config.Load()
+	gin.SetMode(cfg.GinMode)
 
-	userService := service.NewUserService(userRepo)
-	eventService := service.NewEventService(eventRepo)
-	betService := service.NewBetService(betRepo, userRepo, eventRepo)
+	// Connect databases
+	db := database.Connect(cfg.DatabaseURL())
+	defer db.Close()
+	rdb := database.ConnectRedis(cfg.RedisURL)
+	defer rdb.Close()
 
-	// Background settlement
+	// Run migrations
+	if err := runMigrations(db); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	// Setup router using shared function
+	r := SetupRouter(db, rdb, cfg.JWTSecret, cfg.CORSOrigins)
+
+	// Start server
+	srv := &http.Server{Addr: ":" + cfg.Port, Handler: r}
+
 	go func() {
-		for {
-			time.Sleep(10 * time.Second)
-			betService.SettleBets()
+		fmt.Printf("🚀 BetKZ API server starting on :%s\n", cfg.Port)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server failed: %v", err)
 		}
 	}()
 
-	mux := http.NewServeMux()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down server...")
 
-	// API
-	mux.HandleFunc("/users", handlers.CreateUser(userService))
-	mux.HandleFunc("/events", handlers.ListEvents(eventService))
-	mux.HandleFunc("/bets", handlers.PlaceBet(betService))
-
-	// Swagger files
-	mux.Handle("/swagger/",
-		http.StripPrefix("/swagger/",
-			http.FileServer(http.Dir("./swagger")),
-		),
-	)
-
-	// Swagger YAML
-	mux.Handle("/swagger/swagger.yaml",
-		http.StripPrefix("/swagger/",
-			http.FileServer(http.Dir("api")),
-		),
-	)
-
-	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", withCORS(mux)))
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown:", err)
+	}
+	log.Println("Server exited")
 }
