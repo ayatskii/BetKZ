@@ -86,4 +86,5 @@ export const adminAPI = {
     createMarket: (data: any) => api.post('/admin/markets', data),
     overrideOdds: (id: string, newOdds: number) => api.put(`/admin/odds/${id}`, { new_odds: newOdds }),
     deposit: (userId: string, amount: number) => api.post(`/admin/users/${userId}/deposit`, { amount }),
+    depositByEmail: (email: string, amount: number) => api.post('/admin/deposit-by-email', { email, amount }),
 };

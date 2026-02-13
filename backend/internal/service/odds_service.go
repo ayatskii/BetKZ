@@ -137,7 +137,7 @@ func (s *OddsService) CreateMarket(ctx context.Context, req *CreateMarketRequest
 		return nil, errors.New("invalid event ID")
 	}
 
-	validTypes := map[string]bool{"1x2": true, "over_under": true, "both_teams_score": true, "double_chance": true, "handicap": true}
+	validTypes := map[string]bool{"1x2": true, "over_under": true, "both_teams_score": true, "double_chance": true, "handicap": true, "custom": true}
 	if !validTypes[req.MarketType] {
 		return nil, errors.New("invalid market type")
 	}
@@ -160,7 +160,13 @@ func (s *OddsService) CreateMarket(ctx context.Context, req *CreateMarketRequest
 	}
 
 	// Create odds for each outcome
+	seenOutcomes := make(map[string]bool)
 	for _, input := range req.InitialOdds {
+		if seenOutcomes[input.Outcome] {
+			return nil, errors.New("duplicate outcome: " + input.Outcome)
+		}
+		seenOutcomes[input.Outcome] = true
+
 		if input.Odds < 1.01 {
 			return nil, errors.New("odds must be >= 1.01")
 		}

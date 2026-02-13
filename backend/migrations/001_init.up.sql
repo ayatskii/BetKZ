@@ -55,7 +55,7 @@ CREATE INDEX idx_events_start_time ON events(start_time);
 CREATE TABLE markets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
-    market_type VARCHAR(50) NOT NULL CHECK (market_type IN ('1x2', 'over_under', 'both_teams_score', 'double_chance', 'handicap')),
+    market_type VARCHAR(50) NOT NULL CHECK (market_type IN ('1x2', 'over_under', 'both_teams_score', 'double_chance', 'handicap', 'custom')),
     name VARCHAR(255) NOT NULL DEFAULT '',
     line DECIMAL(5,2),  -- For over/under, handicap etc.
     status VARCHAR(50) DEFAULT 'open' CHECK (status IN ('open', 'locked', 'settled', 'cancelled')),

@@ -379,6 +379,49 @@ func (s *BetService) SettleMarket(ctx context.Context, req *SettleMarketRequest)
 	return settled, nil
 }
 
+// Admin: deposit money to user by email
+func (s *BetService) DepositByEmail(ctx context.Context, email string, amount float64) (*models.User, error) {
+	if email == "" {
+		return nil, errors.New("email is required")
+	}
+	if amount <= 0 {
+		return nil, errors.New("amount must be positive")
+	}
+
+	user, err := s.userRepo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, errors.New("internal error")
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+
+	if err := s.Deposit(ctx, user.ID.String(), amount); err != nil {
+		return nil, err
+	}
+
+	// Re-fetch to get updated balance
+	user, _ = s.userRepo.GetByID(ctx, user.ID)
+	return user, nil
+}
+
+// Admin: place bet on behalf of a user by email
+func (s *BetService) AdminPlaceBet(ctx context.Context, email string, req *PlaceBetRequest) (*models.Bet, error) {
+	if email == "" {
+		return nil, errors.New("user email is required")
+	}
+
+	user, err := s.userRepo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, errors.New("internal error")
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+
+	return s.PlaceBet(ctx, user.ID.String(), req)
+}
+
 // Dashboard stats
 func (s *BetService) GetDashboardStats(ctx context.Context) (*repository.DashboardStats, error) {
 	return s.betRepo.GetDashboardStats(ctx)

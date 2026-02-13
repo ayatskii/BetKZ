@@ -123,6 +123,8 @@ func SetupRouter(db *pgxpool.Pool, rdb *redis.Client, jwtSecret string, corsOrig
 		admin.POST("/settle", betHandler.SettleMarket)
 		admin.GET("/stats", betHandler.GetDashboardStats)
 		admin.POST("/users/:id/deposit", betHandler.Deposit)
+		admin.POST("/deposit-by-email", betHandler.DepositByEmail)
+		admin.POST("/place-bet", betHandler.AdminPlaceBet)
 	}
 
 	return r

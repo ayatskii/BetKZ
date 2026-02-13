@@ -41,9 +41,11 @@ export default function AdminDashboard() {
                     <h1 className="text-2xl font-bold">Admin Dashboard</h1>
                     <p className="text-text-muted text-sm">Platform overview & management</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                     <Link to="/admin/events" className="btn-secondary !py-2 !px-4 text-sm">Manage Events</Link>
-                    <Link to="/admin/settle" className="btn-primary !py-2 !px-4 text-sm">Settle Bets</Link>
+                    <Link to="/admin/settle" className="btn-secondary !py-2 !px-4 text-sm">Settle Bets</Link>
+                    <Link to="/admin/deposit" className="btn-primary !py-2 !px-4 text-sm">💰 Deposit</Link>
+                    <Link to="/admin/bet" className="btn-primary !py-2 !px-4 text-sm">🎲 Create Market</Link>
                 </div>
             </div>
 
@@ -80,6 +82,14 @@ export default function AdminDashboard() {
                 <Link to="/admin/settle" className="card group hover:border-accent/30 transition-all">
                     <h3 className="font-semibold mb-1 group-hover:text-accent transition-colors">⚖️ Bet Settlement</h3>
                     <p className="text-text-muted text-sm">Settle markets and process bet payouts</p>
+                </Link>
+                <Link to="/admin/deposit" className="card group hover:border-accent/30 transition-all">
+                    <h3 className="font-semibold mb-1 group-hover:text-accent transition-colors">💰 Deposit to User</h3>
+                    <p className="text-text-muted text-sm">Add funds to a user account by email</p>
+                </Link>
+                <Link to="/admin/bet" className="card group hover:border-accent/30 transition-all">
+                    <h3 className="font-semibold mb-1 group-hover:text-accent transition-colors">🎲 Create Custom Market</h3>
+                    <p className="text-text-muted text-sm">Add custom betting markets to events (e.g., Red Card, Clean Sheet)</p>
                 </Link>
             </div>
         </div>

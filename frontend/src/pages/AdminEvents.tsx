@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { eventsAPI, adminAPI } from '../lib/api';
+import { eventsAPI, adminAPI, sportsAPI } from '../lib/api';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -59,8 +59,8 @@ export default function AdminEvents() {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
                                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${event.status === 'live' ? 'bg-danger/20 text-danger' :
-                                                event.status === 'finished' ? 'bg-text-muted/20 text-text-muted' :
-                                                    'bg-accent/20 text-accent'
+                                            event.status === 'finished' ? 'bg-text-muted/20 text-text-muted' :
+                                                'bg-accent/20 text-accent'
                                             }`}>{event.status.toUpperCase()}</span>
                                         <span className="text-xs text-text-muted">{event.sport_name}</span>
                                     </div>
@@ -96,9 +96,20 @@ export default function AdminEvents() {
 
 function CreateEventForm({ onClose }: { onClose: () => void }) {
     const queryClient = useQueryClient();
+    const { data: sportsData } = useQuery({
+        queryKey: ['sports'],
+        queryFn: sportsAPI.list,
+    });
+    const sports = (sportsData as any)?.data?.sports || [];
+
     const [form, setForm] = useState({
         sport_id: 1, home_team: '', away_team: '', start_time: '',
     });
+
+    // Set default sport_id when sports are loaded
+    if (form.sport_id === 1 && sports.length > 0 && !sports.find((s: any) => s.id === 1)) {
+        setForm(prev => ({ ...prev, sport_id: sports[0].id }));
+    }
 
     const mutation = useMutation({
         mutationFn: (data: typeof form) => adminAPI.createEvent({
@@ -118,9 +129,19 @@ function CreateEventForm({ onClose }: { onClose: () => void }) {
             <h3 className="font-semibold mb-4">Create New Event</h3>
             <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(form); }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-xs text-text-secondary mb-1">Sport ID</label>
-                    <input type="number" value={form.sport_id} onChange={(e) => setForm({ ...form, sport_id: Number(e.target.value) })}
-                        className="input-field" min={1} required />
+                    <label className="block text-xs text-text-secondary mb-1">Sport</label>
+                    <select
+                        value={form.sport_id}
+                        onChange={(e) => setForm({ ...form, sport_id: Number(e.target.value) })}
+                        className="input-field"
+                        required
+                    >
+                        {sports.map((sport: any) => (
+                            <option key={sport.id} value={sport.id}>
+                                {sport.icon} {sport.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div>
                     <label className="block text-xs text-text-secondary mb-1">Start Time</label>

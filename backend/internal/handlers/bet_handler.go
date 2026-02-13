@@ -103,6 +103,58 @@ func (h *BetHandler) Deposit(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "deposit successful"})
 }
 
+// POST /api/admin/deposit-by-email
+type DepositByEmailRequest struct {
+	Email  string  `json:"email" binding:"required"`
+	Amount float64 `json:"amount" binding:"required"`
+}
+
+func (h *BetHandler) DepositByEmail(c *gin.Context) {
+	var req DepositByEmailRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := h.betService.DepositByEmail(c.Request.Context(), req.Email, req.Amount)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message":     "deposit successful",
+		"user_email":  user.Email,
+		"new_balance": user.Balance,
+	})
+}
+
+// POST /api/admin/place-bet
+type AdminPlaceBetRequest struct {
+	UserEmail  string                      `json:"user_email" binding:"required"`
+	Stake      float64                     `json:"stake" binding:"required"`
+	Selections []service.PlaceBetSelection `json:"selections" binding:"required"`
+}
+
+func (h *BetHandler) AdminPlaceBet(c *gin.Context) {
+	var req AdminPlaceBetRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	betReq := &service.PlaceBetRequest{
+		Stake:      req.Stake,
+		Selections: req.Selections,
+	}
+
+	bet, err := h.betService.AdminPlaceBet(c.Request.Context(), req.UserEmail, betReq)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, bet)
+}
+
 // GET /api/admin/bets
 func (h *BetHandler) AdminListBets(c *gin.Context) {
 	status := c.Query("status")

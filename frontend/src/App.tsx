@@ -14,6 +14,8 @@ import ProfilePage from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminEvents from './pages/AdminEvents';
 import AdminSettle from './pages/AdminSettle';
+import AdminDeposit from './pages/AdminDeposit';
+import AdminBet from './pages/AdminBet';
 import NotFoundPage from './components/ErrorBoundary';
 
 const queryClient = new QueryClient({
@@ -67,6 +69,8 @@ export default function App() {
               <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
               <Route path="/admin/events" element={<AdminRoute><AdminEvents /></AdminRoute>} />
               <Route path="/admin/settle" element={<AdminRoute><AdminSettle /></AdminRoute>} />
+              <Route path="/admin/deposit" element={<AdminRoute><AdminDeposit /></AdminRoute>} />
+              <Route path="/admin/bet" element={<AdminRoute><AdminBet /></AdminRoute>} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
